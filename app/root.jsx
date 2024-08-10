@@ -15,6 +15,7 @@ import resetStyles from '~/styles/reset.css?url';
 import appStyles from '~/styles/app.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
+import {useJoyLoyalty} from '~/hooks/useJoyLoyalty';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -86,18 +87,36 @@ export async function loader(args) {
 async function loadCriticalData({context}) {
   const {storefront} = context;
 
-  const [header] = await Promise.all([
+  const [header, joyApiData] = await Promise.all([
     storefront.query(HEADER_QUERY, {
       cache: storefront.CacheLong(),
       variables: {
         headerMenuHandle: 'main-menu', // Adjust to your header menu handle
       },
     }),
+    storefront.query(
+      `
+        #graphql
+        query {
+          shop {
+            metafield (namespace: "joy_loyalty_avada", key: "data"){
+              value
+            }
+          }
+        }
+      `,
+      {variables: {}},
+    ),
     // Add other queries here, so that they are loaded in parallel
   ]);
 
+  const joyData = joyApiData.shop.metafield
+    ? JSON.parse(joyApiData.shop.metafield.value)
+    : null;
+
   return {
     header,
+    joyData,
   };
 }
 
@@ -137,6 +156,9 @@ export function Layout({children}) {
   const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
+  // console.log('Dâta', data);
+
+  useJoyLoyalty(data);
 
   return (
     <html lang="en">
