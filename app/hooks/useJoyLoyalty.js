@@ -1,5 +1,7 @@
 import {useEffect} from 'react';
 
+const joySdk = `https://cdn.shopify.com/extensions/5e2b8eb3-5720-4075-8ce3-fe9c434c4cf2/0.0.0/assets/avada-joy.min.js?v=${new Date().getTime()}`;
+
 /**
  *
  * @param joyData
@@ -64,7 +66,7 @@ export function useJoyLoyalty({
 
       loadScript({
         id: 'avada-joy-script',
-        url: `https://cdn.shopify.com/extensions/5e2b8eb3-5720-4075-8ce3-fe9c434c4cf2/0.0.0/assets/avada-joy.min.js?v=${new Date().getTime()}`,
+        url: joySdk,
       });
     } catch (e) {
       console.log('Cannot initialize Joy Loyalty', e);
