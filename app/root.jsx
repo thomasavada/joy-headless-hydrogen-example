@@ -16,6 +16,7 @@ import appStyles from '~/styles/app.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {useJoyLoyalty} from '~/hooks/useJoyLoyalty';
+import {JOY_SHOP_DATA_QUERY} from '~/graphql/joyLoyalty/JoyShopDataQuery';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -94,31 +95,7 @@ async function loadCriticalData({context}) {
         headerMenuHandle: 'main-menu', // Adjust to your header menu handle
       },
     }),
-    storefront.query(
-      `
-        #graphql
-        query {
-          localization {
-            language {
-              name
-              isoCode
-            }
-            country {
-              currency {
-                isoCode
-              }
-              isoCode
-            }
-          }
-          shop {
-            metafield (namespace: "joy_loyalty_avada", key: "data"){
-              value
-            }
-          }
-        }
-      `,
-      {variables: {}},
-    ),
+    storefront.query(JOY_SHOP_DATA_QUERY, {variables: {}}),
     // Add other queries here, so that they are loaded in parallel
   ]);
 
