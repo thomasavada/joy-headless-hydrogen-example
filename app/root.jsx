@@ -16,7 +16,7 @@ import appStyles from '~/styles/app.css?url';
 import {PageLayout} from '~/components/PageLayout';
 import {FOOTER_QUERY, HEADER_QUERY} from '~/lib/fragments';
 import {useJoyLoyalty} from '~/hooks/useJoyLoyalty';
-import {JOY_SHOP_DATA_QUERY} from '~/graphql/joyLoyalty/JoyShopDataQuery';
+import {JOY_SHOP_DATA_QUERY} from '~/graphql/joy-loyalty/JoyShopDataQuery';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
