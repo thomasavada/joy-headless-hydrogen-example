@@ -98,6 +98,18 @@ async function loadCriticalData({context}) {
       `
         #graphql
         query {
+          localization {
+            language {
+              name
+              isoCode
+            }
+            country {
+              currency {
+                isoCode
+              }
+              isoCode
+            }
+          }
           shop {
             metafield (namespace: "joy_loyalty_avada", key: "data"){
               value
@@ -110,13 +122,21 @@ async function loadCriticalData({context}) {
     // Add other queries here, so that they are loaded in parallel
   ]);
 
-  const joyData = joyApiData.shop.metafield
-    ? JSON.parse(joyApiData.shop.metafield.value)
-    : null;
+  const {shop, localization} = joyApiData;
+  const countryCode = localization.language.isoCode;
+  const currencyCode = localization.country.currency.isoCode;
+  const locale = localization.language.isoCode;
+
+  const joyData = shop.metafield ? JSON.parse(shop.metafield.value) : null;
 
   return {
     header,
     joyData,
+    joyShopData: {
+      countryCode,
+      locale,
+      currencyCode,
+    },
   };
 }
 
@@ -156,8 +176,6 @@ export function Layout({children}) {
   const nonce = useNonce();
   /** @type {RootLoader} */
   const data = useRouteLoaderData('root');
-  // console.log('Dâta', data);
-
   useJoyLoyalty(data);
 
   return (
